@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juan Bautista Thiessen Guasch - Administrador de Empresas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        :root {
+            --primary: #003d99;
+            --primary-light: #0052cc;
+            --primary-dark: #002464;
+            --accent: #0088ff;
+            --success: #00a854;
+            --background: #ffffff;
+            --surface: #f8fafc;
+            --surface-light: #f0f4f9;
+            --border: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #64748b;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: var(--background);
+            overflow-x: hidden;
+        }
+
+        /* ============ LOADER ============ */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOutLoader 0.5s ease-out 2s forwards;
+        }
+
+        .loader-container {
+            text-align: center;
+        }
+
+        .loader-bar {
+            width: 3px;
+            height: 30px;
+            background: var(--primary);
+            border-radius: 2px;
+            margin: 0 3px;
+            display: inline-block;
+            animation: loadingBar 1s ease-in-out infinite;
+        }
+
+        .loader-bar:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loader-bar:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes loadingBar {
+            0%, 100% { height: 10px; opacity: 0.5; }
+            50% { height: 30px; opacity: 1; }
+        }
+
+        @keyframes fadeOutLoader {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        /* ============ HEADER HERO ============ */
+        .header {
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -200px;
+            right: -200px;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -100px;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            text-align: center;
+            opacity: 0;
+            animation: slideUpEnter 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+        }
+
+        .profile-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            display: block;
+            object-fit: cover;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .profile-image:hover {
+            transform: scale(1.08);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 4em;
+            font-weight: 700;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+            line-height: 1.1;
+        }
+
+        .header .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.4em;
+            font-weight: 400;
+            margin-bottom: 40px;
+            letter-spacing: 0.5px;
+        }
+
+        .header .info-badges {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 50px;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 1em;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .badge:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px);
+        }
+
+        .scroll-hint {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9em;
+            animation: pulse 2s infinite;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.7; transform: translateX(-50%) translateY(0); }
+            50% { opacity: 1; transform: translateX(-50%) translateY(8px); }
+        }
+
+        @keyframes slideUpEnter {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============ CONTAINER ============ */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ============ SECCIONES ============ */
+        section {
+            padding: 100px 60px;
+            opacity: 0;
+        }
+
+        section.visible {
+            animation: slideUpEnter 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        section h2 {
+            font-size: 3em;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 60px;
+            position: relative;
+            display: inline-block;
+            letter-spacing: -0.8px;
+        }
+
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+            animation: expandWidth 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes expandWidth {
+            to { width: 100%; }
+        }
+
+        /* ============ ABOUT SECTION ============ */
+        .about-intro {
+            font-size: 1.25em;
+            line-height: 1.9;
+            color: var(--text-secondary);
+            margin-bottom: 60px;
+            max-width: 900px;
+        }
+
+        .about-intro strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .attributes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 30px;
+            margin-top: 80px;
+        }
+
+        .attribute-card {
+            padding: 40px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .attribute-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: left 0.4s ease;
+        }
+
+        .attribute-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 15px 50px rgba(0, 61, 153, 0.12);
+            transform: translateY(-8px);
+        }
+
+        .attribute-card:hover::before {
+            left: 0;
+        }
+
+        .attribute-card h3 {
+            font-size: 1.3em;
+            color: var(--primary);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .attribute-card p {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+            line-height: 1.7;
+        }
+
+        /* ============ EXPERIENCE SECTION ============ */
+        .experience-list {
+            display: grid;
+            gap: 40px;
+        }
+
+        .experience-card {
+            padding: 40px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 40px;
+            align-items: start;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .experience-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 0;
+            background: linear-gradient(180deg, var(--primary), var(--accent));
+            transition: height 0.5s ease;
+        }
+
+        .experience-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 15px 50px rgba(0, 61, 153, 0.12);
+            transform: translateY(-5px);
+        }
+
+        .experience-card:hover::before {
+            height: 100%;
+        }
+
+        .experience-card.current {
+            background: linear-gradient(135deg, #f0f7ff 0%, #f5faff 100%);
+            border-color: var(--primary);
+        }
+
+        .experience-content h3 {
+            font-size: 1.5em;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .company-name {
+            font-size: 1.15em;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .experience-period {
+            color: var(--text-tertiary);
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .experience-description {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 0.98em;
+        }
+
+        .company-logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .company-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            object-fit: contain;
+            background: white;
+            padding: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            flex-shrink: 0;
+            transition: all 0.4s ease;
+        }
+
+        .company-logo:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 35px rgba(0, 61, 153, 0.15);
+        }
+
+        /* ============ EDUCATION SECTION ============ */
+        .education-list {
+            display: grid;
+            gap: 25px;
+        }
+
+        .education-card {
+            padding: 35px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-top: 4px solid var(--primary);
+            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .education-card:hover {
+            border-top-color: var(--accent);
+            box-shadow: 0 12px 40px rgba(0, 61, 153, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .education-card h3 {
+            font-size: 1.25em;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .education-institution {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.98em;
+        }
+
+        .education-year {
+            color: var(--text-tertiary);
+            font-size: 0.9em;
+        }
+
+        /* ============ SKILLS SECTION ============ */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .skill-card {
+            padding: 30px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 61, 153, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .skill-card:hover::before {
+            opacity: 1;
+        }
+
+        .skill-card h3 {
+            position: relative;
+            z-index: 2;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .skill-card p {
+            position: relative;
+            z-index: 2;
+            font-size: 0.9em;
+            opacity: 0.95;
+        }
+
+        /* ============ CONTACT SECTION ============ */
+        .contact-container {
+            background: var(--surface-light);
+            border-radius: 16px;
+            padding: 80px 60px;
+            margin-top: 100px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .contact-card {
+            padding: 40px;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .contact-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 15px 50px rgba(0, 61, 153, 0.12);
+            transform: translateY(-8px);
+        }
+
+        .contact-card h3 {
+            color: var(--primary);
+            font-size: 1.15em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .contact-card a,
+        .contact-card p {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1.05em;
+            font-weight: 500;
+        }
+
+        .contact-card a:hover {
+            color: var(--accent);
+        }
+
+        /* ============ BUTTONS ============ */
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 45px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.2);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            box-shadow: 0 12px 35px rgba(0, 61, 153, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 50px rgba(0, 61, 153, 0.35);
+        }
+
+        .btn-primary:hover::before {
+            opacity: 1;
+        }
+
+        /* ============ FOOTER ============ */
+        footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        footer p {
+            margin: 8px 0;
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+
+        /* ============ RESPONSIVE ============ */
+        @media (max-width: 1024px) {
+            .header {
+                min-height: auto;
+                padding: 60px 40px;
+            }
+
+            .header h1 {
+                font-size: 3em;
+            }
+
+            section {
+                padding: 80px 40px;
+            }
+
+            .experience-card {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .company-logo {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                min-height: auto;
+                padding: 50px 30px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header .subtitle {
+                font-size: 1.1em;
+            }
+
+            .header .info-badges {
+                gap: 20px;
+            }
+
+            .badge {
+                padding: 12px 24px;
+                font-size: 0.9em;
+            }
+
+            section {
+                padding: 60px 30px;
+            }
+
+            section h2 {
+                font-size: 2em;
+            }
+
+            .attributes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .contact-container {
+                padding: 50px 30px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .skill-card {
+                padding: 25px;
+            }
+
+            .experience-card {
+                padding: 30px;
+            }
+        }
+
+        /* ============ SCROLLBAR ============ */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        ::selection {
+            background: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- LOADER -->
+    <div class="loader">
+        <div class="loader-container">
+            <div class="loader-bar"></div>
+            <div class="loader-bar"></div>
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <!-- HEADER HERO -->
+    <header class="header">
+        <div class="header-content">
+            <img src="file:///mnt/project/WhatsApp_Image_20260401_at_20_49_39_1.jpeg" alt="Juan Bautista Thiessen Guasch" class="profile-image">
+            <h1>Juan Bautista<br>Thiessen Guasch</h1>
+            <p class="subtitle">Administrador de Empresas</p>
+            <div class="info-badges">
+                <span class="badge">Bahía Blanca, Buenos Aires</span>
+                <span class="badge">21 Años</span>
+                <span class="badge">Distribuidora 3B</span>
+            </div>
+        </div>
+        <div class="scroll-hint">Explorar Perfil</div>
+    </header>
+
+    <div class="container">
+        <!-- ABOUT SECTION -->
+        <section id="about">
+            <h2>Sobre mí</h2>
+            <p class="about-intro">
+                Soy un <strong>administrador de empresas innovador y visionario</strong> con enfoque estratégico en la optimización de procesos y mejora continua de eficiencia organizacional. A los 21 años, he desarrollado una trayectoria diversa en gestión empresarial, tecnología agrícola y emprendimiento digital. Mi objetivo es aportar <strong>valor estratégico</strong> mediante soluciones creativas y la medición constante de indicadores clave de desempeño.
+            </p>
+
+            <div class="attributes-grid">
+                <div class="attribute-card">
+                    <h3>Innovación</h3>
+                    <p>Busco constantemente nuevas formas de optimizar procesos y mejorar resultados</p>
+                </div>
+                <div class="attribute-card">
+                    <h3>Visión Estratégica</h3>
+                    <p>Apuesto a procesos con visión de crecimiento sostenible y rentabilidad</p>
+                </div>
+                <div class="attribute-card">
+                    <h3>Colaboración</h3>
+                    <p>Dispuesto a asesorar y ayudar al equipo en el logro de objetivos</p>
+                </div>
+                <div class="attribute-card">
+                    <h3>Eficiencia</h3>
+                    <p>Maximizo rendimiento personal y organizacional en cada proyecto</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXPERIENCE SECTION -->
+        <section id="experience">
+            <h2>Experiencia Profesional</h2>
+            <div class="experience-list">
+                <div class="experience-card current">
+                    <div class="experience-content">
+                        <h3>Administrador de Empresa</h3>
+                        <p class="company-name">Distribuidora 3B</p>
+                        <p class="experience-period">2025 - Presente</p>
+                        <p class="experience-description">Gestión administrativa integral, control y optimización de procesos operacionales, medición de KPI, evaluación de rendimiento organizacional y optimización estratégica de recursos. Implementación de mejoras continuas en eficiencia operativa, seguimiento de costos y negociación comercial.</p>
+                    </div>
+                    <div class="company-logo-container">
+                        <img src="file:///mnt/project/WhatsApp_Image_20260612_at_20_46_14.jpeg" alt="Distribuidora 3B" class="company-logo">
+                    </div>
+                </div>
+
+                <div class="experience-card">
+                    <div class="experience-content">
+                        <h3>Atención al Público</h3>
+                        <p class="company-name">Almacén - Avenida Alem 905</p>
+                        <p class="experience-period">Octubre 2025 - Enero 2026</p>
+                        <p class="experience-description">Atención al cliente de excelencia, manejo de consultas complejas, procesamiento de ventas eficiente y resolución estratégica de necesidades. Experiencia demostrada en servicio premium y retención de clientes.</p>
+                    </div>
+                </div>
+
+                <div class="experience-card">
+                    <div class="experience-content">
+                        <h3>Emprendedor Digital</h3>
+                        <p class="company-name">E-Commerce y Venta de Equipos Electrónicos</p>
+                        <p class="experience-period">2023 - 2025 | 2025 - Presente</p>
+                        <p class="experience-description">Gestión independiente integral de tienda online, operaciones de compra-venta, logística de distribución y atención al cliente. Desarrollo de modelo de negocio escalable con enfoque en equipos electrónicos premium.</p>
+                    </div>
+                </div>
+
+                <div class="experience-card">
+                    <div class="experience-content">
+                        <h3>Especialista en Maquinaria Agrícola</h3>
+                        <p class="company-name">Sector Agropecuario</p>
+                        <p class="experience-period">2023 - 2025</p>
+                        <p class="experience-description">Manejo experto de maquinaria agrícola de alta complejidad, mantenimiento preventivo estratégico y operaciones de campo optimizadas. Experiencia práctica en procesos productivos agrícolas de alto rendimiento.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EDUCATION SECTION -->
+        <section id="education">
+            <h2>Formación Académica</h2>
+            <div class="education-list">
+                <div class="education-card">
+                    <h3>Administración de Empresas</h3>
+                    <p class="education-institution">Universidad Nacional del Sur (UNS)</p>
+                    <p class="education-year">2025 - Presente | Primer Año en Curso</p>
+                </div>
+
+                <div class="education-card">
+                    <h3>Administración de Empresas Agropecuarias</h3>
+                    <p class="education-institution">Instituto Especializado</p>
+                    <p class="education-year">2024 - 2025 | 1 Año Completado</p>
+                </div>
+
+                <div class="education-card">
+                    <h3>Despachante de Aduanas</h3>
+                    <p class="education-institution">Instituto Especializado</p>
+                    <p class="education-year">2022 - 2023 | 1 Año Completado</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SKILLS SECTION -->
+        <section id="skills">
+            <h2>Competencias Técnicas</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>Gestión Administrativa</h3>
+                    <p>Control empresarial integral</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Medición de KPI</h3>
+                    <p>Análisis de indicadores clave</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Evaluación de Rendimiento</h3>
+                    <p>Análisis de desempeño organizacional</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Cierre de Ventas</h3>
+                    <p>Técnicas profesionales avanzadas</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Seguimiento de Costos</h3>
+                    <p>Control financiero y análisis</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Negociación Estratégica</h3>
+                    <p>Cierre de acuerdos comerciales</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Google Drive Pro</h3>
+                    <p>Productividad digital avanzada</p>
+                </div>
+                <div class="skill-card">
+                    <h3>Relaciones Interpersonales</h3>
+                    <p>Liderazgo y conexión efectiva</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section>
+            <div class="contact-container">
+                <h2 style="margin-bottom: 60px;">Contacto</h2>
+                <div class="contact-grid">
+                    <div class="contact-card">
+                        <h3>WhatsApp</h3>
+                        <a href="https://wa.me/5492915321052?text=Hola%20Juan%20Bautista%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20tu%20perfil%20profesional" target="_blank">
+                            +54 291 532 1052
+                        </a>
+                    </div>
+
+                    <div class="contact-card">
+                        <h3>Correo Electrónico</h3>
+                        <a href="mailto:juanbauti.luro@gmail.com">
+                            juanbauti.luro@gmail.com
+                        </a>
+                    </div>
+
+                    <div class="contact-card">
+                        <h3>Ubicación</h3>
+                        <p>Zelarrayan 946<br>Bahía Blanca, Buenos Aires</p>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <a href="https://wa.me/5492915321052?text=Hola%20Juan%20Bautista%2C%20me%20interesa%20conocer%20m%C3%A1s%20sobre%20tu%20perfil%20profesional" target="_blank" class="btn btn-primary">
+                        Contactar por WhatsApp
+                    </a>
+                    <a href="mailto:juanbauti.luro@gmail.com" class="btn btn-primary">
+                        Enviar Correo
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>Juan Bautista Thiessen Guasch</p>
+        <p>Administrador de Empresas | Bahía Blanca, Buenos Aires</p>
+    </footer>
+
+    <script>
+        // INTERSECTION OBSERVER PARA SCROLL ANIMATIONS
+        const observerOptions = {
+            threshold: 0.15,
+            rootMargin: '0px 0px -80px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // SMOOTH SCROLL INTERACTION
+        document.querySelector('.scroll-hint').addEventListener('click', function() {
+            document.querySelector('#about').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // REANIMACIÓN AL HACER CLIC
+        document.querySelectorAll('.attribute-card, .experience-card, .education-card, .skill-card').forEach(el => {
+            el.addEventListener('click', function() {
+                this.style.animation = 'none';
+                setTimeout(() => {
+                    this.style.animation = 'slideUpEnter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                }, 10);
+            });
+        });
+
+        console.log('CV Profesional Cargado - Juan Bautista Thiessen Guasch');
+    </script>
+</body>
+</html>
